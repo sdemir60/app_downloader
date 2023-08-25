@@ -33,6 +33,6 @@ Console.ReadLine();
 
 
 
-// TODO SD: trycache .
+// TODO SD: trycache
 // TODO SD: proje klasör yapısı
 // TODO SD: https://www.gencayyildiz.com/blog/c-factory-method-design-patternfactory-method-tasarim-deseni/ 
