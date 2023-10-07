@@ -1,38 +1,40 @@
-﻿using Downloader.Definition;
-using Downloader.Function;
-using Downloader.Interface;
-using Downloader.Object;
+﻿using Downloader.Enums;
+using Downloader.Factories;
+using Downloader.Functions;
+using Downloader.Interfaces;
+using Downloader.Objects;
 
-
-string sourceData;
-List<string> sourceList;
-IDownloader downloader;
-List<FileInformation> fileInformationList;
-
-fileInformationList = new List<FileInformation>();
-
-sourceData = Console.ReadLine().GetSourceData();
-sourceList = sourceData.Split(';').ToList();
-
-foreach (string source in sourceList)
+do
 {
-    fileInformationList.Add(source.GetFileInformation());
-}
+    try
+    {
+        IDownloader downloader;
+        string? inputData = string.Empty, fileSourceData;
+        List<string> fileSourceList = new List<string>();
+        List<FileInformation> fileInformationList = new List<FileInformation>();
 
+        inputData = ConsoleHelper.ReadLine();
+        fileSourceData = FileHelper.ReadFile(inputData);
+        fileSourceList = fileSourceData.ToList("\r\n", "\r", "\n", ";");
+        fileInformationList.AddRange(fileSourceList.Select(fileSource => new FileInformation(fileSource)));
 
-foreach (FileInformation fileInformation in fileInformationList)
-{
-    downloader = fileInformation.GetDownloader();
+        foreach (FileInformation fileInformation in fileInformationList)
+        {
+            try
+            {
+                downloader = DownloaderFactory.Create(fileInformation);
 
-    if (downloader != null)
-        await downloader.Download(fileInformation);
-}
+                await downloader.Download(fileInformation, ConsoleHelper.PercentageCallback, ConsoleHelper.SuccessCallback, ConsoleHelper.ErrorCallback);
+            }
+            catch (Exception exception)
+            {
+                exception.Message.WriteError(speed: WritingSpeed.UltraFast, moveNewLineAfterWriting: true);
+            }
+        }
+    }
+    catch (Exception exception)
+    {
+        exception.Message.WriteError(speed: WritingSpeed.UltraFast, moveNewLineAfterWriting: true);
+    }
 
-
-Console.ReadLine();
-
-
-
-// TODO SD: trycache
-// TODO SD: proje klasör yapısı
-// TODO SD: https://www.gencayyildiz.com/blog/c-factory-method-design-patternfactory-method-tasarim-deseni/ 
+} while (ConsoleHelper.IsContinue());
