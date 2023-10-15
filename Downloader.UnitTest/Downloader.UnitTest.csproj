@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Downloader\Downloader.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Assets\files.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

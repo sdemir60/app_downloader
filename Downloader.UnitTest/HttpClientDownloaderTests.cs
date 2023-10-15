@@ -1,4 +1,5 @@
 using Downloader.Constants;
+using Downloader.Enums;
 using Downloader.Factories;
 using Downloader.Functions;
 using Downloader.Interfaces;

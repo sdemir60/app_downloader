@@ -24,9 +24,11 @@ namespace Downloader.Abstracts
                     long bytesRead = 0;
                     byte[] buffer = new byte[8192];
                     bool isMoreToRead = true;
+                    string emptyPercentage = "";
 
                     do
                     {
+                        double percentage;
                         int bytesReadThisTime = await contentStream.ReadAsync(buffer, 0, buffer.Length);
 
                         if (bytesReadThisTime == 0)
@@ -41,9 +43,13 @@ namespace Downloader.Abstracts
 
                         if (totalBytes > 0)
                         {
-                            double percentage = ((double)bytesRead / totalBytes) * 100;
-
+                            percentage = ((double)bytesRead / totalBytes) * 100;
                             percentageCallbackDelegate?.Invoke(percentage);
+                        }
+                        else
+                        {
+                            emptyPercentage = emptyPercentage.Length <= 3 ? string.Format("{0}.", emptyPercentage) : ".";
+                            percentageCallbackDelegate?.Invoke(emptyPercentage);
                         }
                     }
                     while (isMoreToRead);

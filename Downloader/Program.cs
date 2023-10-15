@@ -22,6 +22,8 @@ do
         {
             try
             {
+                fileInformation.Name.Write(ConsoleColor.Gray, speed: WritingSpeed.UltraFast, suffix: " ");
+
                 downloader = DownloaderFactory.Create(fileInformation);
 
                 await downloader.Download(fileInformation, ConsoleHelper.PercentageCallback, ConsoleHelper.SuccessCallback, ConsoleHelper.ErrorCallback);

@@ -9,9 +9,20 @@ namespace Downloader.Functions
             text.Write(ConsoleColor.White, speed);
         }
 
-        public static void Write(this string text, ConsoleColor color, WritingSpeed speed = WritingSpeed.VeryFast, bool moveNewLineAfterWriting = false)
+        public static void Write(this string text, ConsoleColor color, WritingSpeed speed = WritingSpeed.VeryFast, string suffix = "", bool moveNewLineBeforeWriting = false, bool moveNewLineAfterWriting = false)
         {
             char[] characters;
+
+            if (!string.IsNullOrEmpty(suffix))
+            {
+                text = $"{text + suffix}";
+            }
+
+            if (moveNewLineBeforeWriting)
+            {
+                MoveCursorY(1);
+                SetCursorPositionX(0);
+            }
 
             characters = text.ToArray();
 
@@ -38,7 +49,7 @@ namespace Downloader.Functions
 
         public static void WriteError(this string text, WritingSpeed speed = WritingSpeed.VeryFast, bool moveNewLineAfterWriting = false)
         {
-            text.Write(ConsoleColor.Red, speed, moveNewLineAfterWriting);
+            text.Write(ConsoleColor.Red, speed, moveNewLineAfterWriting: moveNewLineAfterWriting);
         }
 
         public static void WriteWarn(this string text, WritingSpeed speed = WritingSpeed.VeryFast)
@@ -100,15 +111,6 @@ namespace Downloader.Functions
             line = Console.ReadLine() ?? line;
             cleanLine = line.Trim();
 
-            if (string.IsNullOrEmpty(cleanLine))
-            {
-                ConsoleHelper.MoveCursor(0, -1);
-            }
-            else
-            {
-                ConsoleHelper.MoveCursor(line.Length + 1, -1);
-            }
-
             return cleanLine;
         }
 
@@ -146,17 +148,24 @@ namespace Downloader.Functions
         {
             double percentageValue;
 
-            percentageValue = double.Parse(percentage.ToString());
-            percentageValue = Math.Round(percentageValue);
-
             Console.CursorVisible = false;
 
-            WriteInfo($"%{percentageValue,-3}");
-
-            if (percentageValue != 100)
+            if (Double.TryParse(percentage.ToString(), out percentageValue))
             {
-                MoveCursorX(-4);
-                Console.CursorVisible = true;
+                percentageValue = double.Parse(percentage.ToString());
+                percentageValue = Math.Round(percentageValue);
+
+                WriteInfo($"%{percentageValue,-3}");
+
+                if (percentageValue != 100)
+                {
+                    MoveCursorX(-4);
+                }
+            }
+            else
+            {
+                WriteInfo($"{percentage.ToString(),-3}");
+                MoveCursorX(-3);
             }
         }
 
